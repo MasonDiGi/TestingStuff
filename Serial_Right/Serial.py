@@ -1,15 +1,19 @@
 import serial
+import time
+
+var1 = b'\x49'
+var2 = b'\x4A'
+
 
 ser = serial.Serial()
 ser.baudrate = 9600
-ser.port = '/dev/ttyACM0'
+ser.port = '/dev/ttyAMA0' #AMA0
 ser.open()
 
-
+#Continually write to the due
 while True:
-    ser.write(input("Enter Command: ").encode())
-    line = ser.readline()
-    while line == "":
-        line = ser.readline()
-    print(line.decode('utf-8'), end="")
-
+    time.sleep(.5)
+    ser.write(b'\x02')
+    ser.write(var1)
+    ser.write(var2)
+    ser.write(b'\x03')
