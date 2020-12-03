@@ -1,0 +1,14 @@
+#!/bin/bash
+# Arg1 = client name
+
+cd /home/mason/easy-rsa
+./easyrsa gen-req $1 nopass
+cp pki/private/$1.key /home/mason/client-configs/keys/
+scp pki/reqs/$1.req mason@10.142.0.2:/tmp
+ssh mason@10.142.0.2 bash -c "'
+    cd ~/easy-rsa
+    ./easyrsa import-req /tmp/$1.req $1
+    ./easyrsa sign-req client $1
+    scp pki/issued/$1.crt mason@10.142.0.3:/tmp
+'"
+cp /tmp/$1.crt ~/client-configs/keys
